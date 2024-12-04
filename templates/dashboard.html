@@ -1,44 +1,66 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Plataforma Educativa{% endblock %}
+{% block title %}Dashboard - EduConnect{% endblock %}
 
 {% block content %}
-    <div class="sidebar">
-        <h2>Menú</h2>
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('video_chat') }}">Video/Chat</a></li>
-                <li><a href="{{ url_for('certificados') }}">Certificados</a></li>
-                {% if user.role == 'profesor' %}
-                    <li><a href="{{ url_for('alumnos') }}">Alumnos</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    </div>
-
-    <div class="main-content">
-        <h1>Bienvenido, {{ user.nombre }}</h1>
-
-        {% if user.role == 'profesor' %}
-            <div class="card">
-                <h2>Estadísticas del profesor</h2>
-                <p>Total de cursos: 5</p>
-                <p>Total de alumnos: 50</p>
-                <p>Calificación promedio: 4.8/5</p>
-            </div>
-        {% else %}
-            <div class="card">
-                <h2>Mis cursos</h2>
-                <ul>
-                    <li><a href="{{ url_for('curso', curso_id=1) }}">Introducción a Flask</a></li>
-                    <li><a href="{{ url_for('curso', curso_id=2) }}">Python Avanzado</a></li>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar py-3">
+            <div class="position-sticky">
+                <h5 class="text-center" style="color: #134B42;">Menú</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('dashboard') }}" style="color: #134B42;">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('video_chat') }}" style="color: #CA763B;">Video/Chat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('certificados') }}" style="color: #EEA83B;">Certificados</a>
+                    </li>
+                    {% if user.role == 'profesor' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('alumnos') }}" style="color: #AEBA8A;">Alumnos</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
-            <div class="card">
-                <h2>Mis certificados</h2>
-                <p>Has obtenido 2 certificados. <a href="{{ url_for('certificados') }}">Ver todos</a></p>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 style="color: #134B42;">Bienvenido, {{ user.nombre }}</h1>
             </div>
-        {% endif %}
+
+            {% if user.role == 'profesor' %}
+                <div class="card mb-4" style="border-color: #CA763B;">
+                    <div class="card-body">
+                        <h2 class="card-title" style="color: #CA763B;">Estadísticas del Profesor</h2>
+                        <p class="card-text">Total de cursos: 5</p>
+                        <p class="card-text">Total de alumnos: 50</p>
+                        <p class="card-text">Calificación promedio: 4.8/5</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card mb-4" style="border-color: #134B42;">
+                    <div class="card-body">
+                        <h2 class="card-title" style="color: #134B42;">Mis Cursos</h2>
+                        <ul>
+                            <li><a href="{{ url_for('curso', curso_id=1) }}" style="color: #CA763B;">Introducción a Flask</a></li>
+                            <li><a href="{{ url_for('curso', curso_id=2) }}" style="color: #CA763B;">Python Avanzado</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card mb-4" style="border-color: #AEBA8A;">
+                    <div class="card-body">
+                        <h2 class="card-title" style="color: #AEBA8A;">Mis Certificados</h2>
+                        <p>Has obtenido 2 certificados. <a href="{{ url_for('certificados') }}" style="color: #CA763B;">Ver todos</a></p>
+                    </div>
+                </div>
+            {% endif %}
+        </main>
     </div>
-{%endblock %}
+</div>
+{% endblock %}
