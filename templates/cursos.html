@@ -1,74 +1,96 @@
 {% extends "base.html" %}
 
-{% block title %}Curso - Plataforma Educativa{% endblock %}
+{% block title %}Curso: Introducción a Flask - EduConnect{% endblock %}
 
 {% block content %}
-<div class="flex h-screen bg-[#AEBA8A]">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-[#134B42] text-white p-6">
-        <h2 class="text-2xl font-bold mb-6">Menú</h2>
-        <nav>
-            <ul class="space-y-2">
-                <li><a href="{{ url_for('dashboard') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Dashboard</a></li>
-                <li><a href="{{ url_for('video_chat') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Video/Chat</a></li>
-                <li><a href="{{ url_for('certificados') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Certificados</a></li>
-                {% if current_user.role == 'profesor' %}
-                <li><a href="{{ url_for('alumnos') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Alumnos</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 p-10 overflow-y-auto">
-        <h1 class="text-3xl font-bold text-[#134B42] mb-6">Curso: Introducción a Flask</h1>
-        
-        <!-- Descripción del curso -->
-        <section class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-2xl font-bold text-[#134B42] mb-4">Descripción del curso</h2>
-            <p class="text-[#134B42]">Este curso te introducirá al framework Flask para desarrollo web con Python. Aprenderás a crear aplicaciones web robustas y escalables utilizando las mejores prácticas de la industria.</p>
-        </section>
-
-        <!-- Videos del curso -->
-        <section class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-2xl font-bold text-[#134B42] mb-4">Videos del curso</h2>
-            <ul class="space-y-2">
-                <li><a href="#" class="text-[#CA763B] hover:underline">1. Introducción a Flask</a></li>
-                <li><a href="#" class="text-[#CA763B] hover:underline">2. Configuración del entorno</a></li>
-                <li><a href="#" class="text-[#CA763B] hover:underline">3. Creación de rutas</a></li>
-            </ul>
-        </section>
-
-        <!-- Ejercicios del curso -->
-        <section class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-2xl font-bold text-[#134B42] mb-4">Ejercicios del curso</h2>
-            <ul class="space-y-2">
-                <li><a href="#" class="text-[#CA763B] hover:underline">Ejercicio 1: Crear una aplicación básica</a></li>
-                <li><a href="#" class="text-[#CA763B] hover:underline">Ejercicio 2: Implementar un formulario</a></li>
-            </ul>
-        </section>
-
-        <!-- Tests del curso -->
-        <section class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-2xl font-bold text-[#134B42] mb-4">Tests del curso</h2>
-            <ul class="space-y-2">
-                <li><a href="#" class="text-[#CA763B] hover:underline">Test 1: Conceptos básicos de Flask</a></li>
-                <li><a href="#" class="text-[#CA763B] hover:underline">Test 2: Rutas y vistas</a></li>
-            </ul>
-        </section>
-
-        {% if current_user.role == 'profesor' %}
-        <!-- Administración del curso (solo para profesores) -->
-        <section class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-bold text-[#134B42] mb-4">Administración del curso</h2>
-            <div class="space-x-2">
-                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B]">Crear nuevo test</a>
-                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B]">Crear nueva descripción</a>
-                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B]">Crear nuevo ejercicio</a>
-                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B]">Subir video</a>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar py-3">
+            <div class="position-sticky">
+                <h5 class="text-center" style="color: #134B42;">Menú</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('dashboard') }}" style="color: #134B42;">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('video_chat') }}" style="color: #CA763B;">Video/Chat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('certificados') }}" style="color: #EEA83B;">Certificados</a>
+                    </li>
+                    {% if current_user.role == 'profesor' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('alumnos') }}" style="color: #AEBA8A;">Alumnos</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
-        </section>
-        {% endif %}
-    </main>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <h1 class="mt-3 text-success">Curso: Introducción a Flask</h1>
+
+            <!-- Descripción del curso -->
+            <section class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="card-title text-success">Descripción del curso</h2>
+                    <p class="card-text text-muted">
+                        Este curso te introducirá al framework Flask para desarrollo web con Python. Aprenderás a crear aplicaciones web robustas y escalables utilizando las mejores prácticas de la industria.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Videos del curso -->
+            <section class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="card-title text-success">Videos del curso</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-warning">1. Introducción a Flask</a></li>
+                        <li><a href="#" class="text-warning">2. Configuración del entorno</a></li>
+                        <li><a href="#" class="text-warning">3. Creación de rutas</a></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Ejercicios del curso -->
+            <section class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="card-title text-success">Ejercicios del curso</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-warning">Ejercicio 1: Crear una aplicación básica</a></li>
+                        <li><a href="#" class="text-warning">Ejercicio 2: Implementar un formulario</a></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Tests del curso -->
+            <section class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="card-title text-success">Tests del curso</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-warning">Test 1: Conceptos básicos de Flask</a></li>
+                        <li><a href="#" class="text-warning">Test 2: Rutas y vistas</a></li>
+                    </ul>
+                </div>
+            </section>
+
+            {% if current_user.role == 'profesor' %}
+            <!-- Administración del curso -->
+            <section class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-success">Administración del curso</h2>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="#" class="btn btn-warning text-white">Crear nuevo test</a>
+                        <a href="#" class="btn btn-warning text-white">Crear nueva descripción</a>
+                        <a href="#" class="btn btn-warning text-white">Crear nuevo ejercicio</a>
+                        <a href="#" class="btn btn-warning text-white">Subir video</a>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+        </main>
+    </div>
 </div>
 {% endblock %}
