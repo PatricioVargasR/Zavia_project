@@ -1,39 +1,67 @@
-{% extends "base.html" %}
-
-{% block title %}Inicio - Plataforma Educativa{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-    <h1>Bienvenido a nuestra Plataforma Educativa</h1>
-    
-    <section class="banner">
-        <h2>Aprende con los mejores profesores</h2>
-        <p>Descubre nuestros cursos de Flask y Python</p>
-    </section>
+<section class="banner text-center py-5" style="background-color: #AEBA8A;">
+    <div class="container">
+        <h2 style="color: #134B42;">Bienvenido a Zavia</h2>
+        <p class="lead" style="color: #CA763B;">Conecta estudiantes y profesores de manera sencilla y efectiva.</p>
+        <a href="#plans" class="btn btn-primary" style="background-color: #EEA83B; border: none;">Explora nuestros planes</a>
+    </div>
+</section>
 
-    <section class="planes">
-        <h2>Planes de acceso</h2>
-        <div class="card">
-            <h3>Básico</h3>
-            <p>Acceso a cursos básicos</p>
-            <p>Precio: $9.99/mes</p>
-            <a href="#" class="btn">Elegir plan</a>
+<section id="about" class="about-us py-5">
+    <div class="container">
+        <h3 class="text-center" style="color: #CA763B;">¿Quiénes Somos?</h3>
+        <p class="text-center" style="color: #134B42;">Somos Zavia, una plataforma diseñada para facilitar el aprendizaje. Nuestro objetivo es conectar estudiantes con los mejores profesores en su área, ofreciendo una experiencia educativa personalizada.</p>
+        <div class="row text-center mt-4">
+            <div class="col-md-4">
+                <h5 style="color: #AEBA8A;">+500 Profesores</h5>
+                <p style="color: #134B42;">Expertos en diferentes disciplinas.</p>
+            </div>
+            <div class="col-md-4">
+                <h5 style="color: #AEBA8A;">+1,000 Estudiantes</h5>
+                <p style="color: #134B42;">Satisfechos con nuestra plataforma.</p>
+            </div>
+            <div class="col-md-4">
+                <h5 style="color: #AEBA8A;">100% Personalizado</h5>
+                <p style="color: #134B42;">Clases adaptadas a tus necesidades.</p>
+            </div>
         </div>
-        <div class="card">
-            <h3>Intermedio</h3>
-            <p>Acceso a cursos intermedios y básicos</p>
-            <p>Precio: $19.99/mes</p>
-            <a href="#" class="btn">Elegir plan</a>
-        </div>
-        <div class="card">
-            <h3>Premium</h3>
-            <p>Acceso a todos los cursos</p>
-            <p>Precio: $29.99/mes</p>
-            <a href="#" class="btn">Elegir plan</a>
-        </div>
-    </section>
+    </div>
+</section>
 
-    <section class="quienes-somos">
-        <h2>Quiénes somos</h2>
-        <p>Somos una plataforma educativa dedicada a proporcionar asesorías de calidad en el framework Flask de Python. Nuestro equipo está compuesto por expertos en desarrollo web y programación, comprometidos con tu aprendizaje y éxito profesional.</p>
-    </section>
+<section id="plans" class="plans py-5" style="background-color: #F9F9F9;">
+    <div class="container">
+        <h3 class="text-center" style="color: #CA763B;">Nuestros Planes</h3>
+        <div class="row text-center mt-4">
+            <div class="col-md-4">
+                <div class="card" style="border-color: #AEBA8A;">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: #EEA83B;">Plan Básico</h5>
+                        <p class="card-text">Acceso a 10 clases mensuales.</p>
+                        <p class="text-muted">$9.99/mes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="border-color: #CA763B;">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: #EEA83B;">Plan Premium</h5>
+                        <p class="card-text">Clases ilimitadas y tutorías exclusivas.</p>
+                        <p class="text-muted">$19.99/mes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="border-color: #134B42;">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: #EEA83B;">Plan Empresarial</h5>
+                        <p class="card-text">Planes a medida para instituciones.</p>
+                        <p class="text-muted">Contáctanos para cotización</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
