@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Curso - Plataforma Educativa{% endblock %}
+
+{% block content %}
+<div class="flex h-screen bg-[#AEBA8A]">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#134B42] text-white p-6">
+        <h2 class="text-2xl font-bold mb-6">Menú</h2>
+        <nav>
+            <ul class="space-y-2">
+                <li><a href="{{ url_for('dashboard') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Dashboard</a></li>
+                <li><a href="{{ url_for('video_chat') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Video/Chat</a></li>
+                <li><a href="{{ url_for('certificados') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Certificados</a></li>
+                {% if current_user.role == 'profesor' %}
+                <li><a href="{{ url_for('alumnos') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Alumnos</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-10 overflow-y-auto">
+        <h1 class="text-3xl font-bold text-[#134B42] mb-6">Curso: Introducción a Flask</h1>
+        
+        <!-- Descripción del curso -->
+        <section class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-[#134B42] mb-4">Descripción del curso</h2>
+            <p class="text-[#134B42]">Este curso te introducirá al framework Flask para desarrollo web con Python. Aprenderás a crear aplicaciones web robustas y escalables utilizando las mejores prácticas de la industria.</p>
+        </section>
+
+        <!-- Videos del curso -->
+        <section class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-[#134B42] mb-4">Videos del curso</h2>
+            <ul class="space-y-2">
+                <li><a href="#" class="text-[#CA763B] hover:underline">1. Introducción a Flask</a></li>
+                <li><a href="#" class="text-[#CA763B] hover:underline">2. Configuración del entorno</a></li>
+                <li><a href="#" class="text-[#CA763B] hover:underline">3. Creación de rutas</a></li>
+            </ul>
+        </section>
+
+        <!-- Ejercicios del curso -->
+        <section class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-[#134B42] mb-4">Ejercicios del curso</h2>
+            <ul class="space-y-2">
+                <li><a href="#" class="text-[#CA763B] hover:underline">Ejercicio 1: Crear una aplicación básica</a></li>
+                <li><a href="#" class="text-[#CA763B] hover:underline">Ejercicio 2: Implementar un formulario</a></li>
+            </ul>
+        </section>
+
+        <!-- Tests del curso -->
+        <section class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-[#134B42] mb-4">Tests del curso</h2>
+            <ul class="space-y-2">
+                <li><a href="#" class="text-[#CA763B] hover:underline">Test 1: Conceptos básicos de Flask</a></li>
+                <li><a href="#" class="text-[#CA763B] hover:underline">Test 2: Rutas y vistas</a></li>
+            </ul>
+        </section>
+
+        {% if current_user.role == 'profesor' %}
+        <!-- Administración del curso (solo para profesores) -->
+        <section class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold text-[#134B42] mb-4">Administración del curso</h2>
+            <div class="space-x-2">
+                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B]">Crear nuevo test</a>
+                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B]">Crear nueva descripción</a>
+                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B]">Crear nuevo ejercicio</a>
+                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B]">Subir video</a>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}

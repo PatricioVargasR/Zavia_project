@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Plataforma Educativa{% endblock %}
+
+{% block content %}
+    <h1>Bienvenido a nuestra Plataforma Educativa</h1>
+    
+    <section class="banner">
+        <h2>Aprende con los mejores profesores</h2>
+        <p>Descubre nuestros cursos de Flask y Python</p>
+    </section>
+
+    <section class="planes">
+        <h2>Planes de acceso</h2>
+        <div class="card">
+            <h3>Básico</h3>
+            <p>Acceso a cursos básicos</p>
+            <p>Precio: $9.99/mes</p>
+            <a href="#" class="btn">Elegir plan</a>
+        </div>
+        <div class="card">
+            <h3>Intermedio</h3>
+            <p>Acceso a cursos intermedios y básicos</p>
+            <p>Precio: $19.99/mes</p>
+            <a href="#" class="btn">Elegir plan</a>
+        </div>
+        <div class="card">
+            <h3>Premium</h3>
+            <p>Acceso a todos los cursos</p>
+            <p>Precio: $29.99/mes</p>
+            <a href="#" class="btn">Elegir plan</a>
+        </div>
+    </section>
+
+    <section class="quienes-somos">
+        <h2>Quiénes somos</h2>
+        <p>Somos una plataforma educativa dedicada a proporcionar asesorías de calidad en el framework Flask de Python. Nuestro equipo está compuesto por expertos en desarrollo web y programación, comprometidos con tu aprendizaje y éxito profesional.</p>
+    </section>
+{% endblock %}

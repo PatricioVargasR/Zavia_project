@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Plataforma Educativa{% endblock %}
+
+{% block content %}
+    <div class="sidebar">
+        <h2>Menú</h2>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('video_chat') }}">Video/Chat</a></li>
+                <li><a href="{{ url_for('certificados') }}">Certificados</a></li>
+                {% if user.role == 'profesor' %}
+                    <li><a href="{{ url_for('alumnos') }}">Alumnos</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <h1>Bienvenido, {{ user.nombre }}</h1>
+
+        {% if user.role == 'profesor' %}
+            <div class="card">
+                <h2>Estadísticas del profesor</h2>
+                <p>Total de cursos: 5</p>
+                <p>Total de alumnos: 50</p>
+                <p>Calificación promedio: 4.8/5</p>
+            </div>
+        {% else %}
+            <div class="card">
+                <h2>Mis cursos</h2>
+                <ul>
+                    <li><a href="{{ url_for('curso', curso_id=1) }}">Introducción a Flask</a></li>
+                    <li><a href="{{ url_for('curso', curso_id=2) }}">Python Avanzado</a></li>
+                </ul>
+            </div>
+            <div class="card">
+                <h2>Mis certificados</h2>
+                <p>Has obtenido 2 certificados. <a href="{{ url_for('certificados') }}">Ver todos</a></p>
+            </div>
+        {% endif %}
+    </div>
+{%endblock %}

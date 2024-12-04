@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Alumnos - Plataforma Educativa{% endblock %}
+
+{% block content %}
+<div class="flex h-screen bg-[#AEBA8A]">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#134B42] text-white p-6">
+        <h2 class="text-2xl font-bold mb-6">Menú</h2>
+        <nav>
+            <ul class="space-y-2">
+                <li><a href="{{ url_for('dashboard') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Dashboard</a></li>
+                <li><a href="{{ url_for('video_chat') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Video/Chat</a></li>
+                <li><a href="{{ url_for('certificados') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Certificados</a></li>
+                <li><a href="{{ url_for('alumnos') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Alumnos</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-10 overflow-y-auto">
+        <h1 class="text-3xl font-bold text-[#134B42] mb-6">Administrar Alumnos</h1>
+        
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <table class="min-w-full">
+                <thead class="bg-[#134B42] text-white">
+                    <tr>
+                        <th class="py-3 px-4 text-left">Nombre</th>
+                        <th class="py-3 px-4 text-left">Email</th>
+                        <th class="py-3 px-4 text-left">Cursos</th>
+                        <th class="py-3 px-4 text-left">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b">
+                        <td class="py-3 px-4">Ana García</td>
+                        <td class="py-3 px-4">ana@example.com</td>
+                        <td class="py-3 px-4">2</td>
+                        <td class="py-3 px-4">
+                            <a href="#" class="bg-[#EEA83B] text-[#134B42] px-3 py-1 rounded hover:bg-[#CA763B] mr-2">Editar</a>
+                            <a href="#" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Eliminar</a>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-3 px-4">Juan Pérez</td>
+                        <td class="py-3 px-4">juan@example.com</td>
+                        <td class="py-3 px-4">1</td>
+                        <td class="py-3 px-4">
+                            <a href="#" class="bg-[#EEA83B] text-[#134B42] px-3 py-1 rounded hover:bg-[#CA763B] mr-2">Editar</a>
+                            <a href="#" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Eliminar</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4">María Rodríguez</td>
+                        <td class="py-3 px-4">maria@example.com</td>
+                        <td class="py-3 px-4">3</td>
+                        <td class="py-3 px-4">
+                            <a href="#" class="bg-[#EEA83B] text-[#134B42] px-3 py-1 rounded hover:bg-[#CA763B] mr-2">Editar</a>
+                            <a href="#" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock %}

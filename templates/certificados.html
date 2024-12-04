@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Certificados - Plataforma Educativa{% endblock %}
+
+{% block content %}
+<div class="flex h-screen bg-[#AEBA8A]">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#134B42] text-white p-6">
+        <h2 class="text-2xl font-bold mb-6">Menú</h2>
+        <nav>
+            <ul class="space-y-2">
+                <li><a href="{{ url_for('dashboard') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Dashboard</a></li>
+                <li><a href="{{ url_for('video_chat') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Video/Chat</a></li>
+                <li><a href="{{ url_for('certificados') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Certificados</a></li>
+                {% if current_user.role == 'profesor' %}
+                <li><a href="{{ url_for('alumnos') }}" class="block py-2 px-4 hover:bg-[#EEA83B] hover:text-[#134B42] rounded">Alumnos</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-10 overflow-y-auto">
+        <h1 class="text-3xl font-bold text-[#134B42] mb-6">
+            {% if current_user.role == 'profesor' %}
+            Certificados Expedidos
+            {% else %}
+            Mis Certificados
+            {% endif %}
+        </h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Certificado 1 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold text-[#134B42] mb-2">Introducción a Flask</h3>
+                <p class="text-[#134B42] mb-4">Fecha de expedición: 15/05/2023</p>
+                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B] inline-block">Ver PDF</a>
+            </div>
+
+            <!-- Certificado 2 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold text-[#134B42] mb-2">Python Avanzado</h3>
+                <p class="text-[#134B42] mb-4">Fecha de expedición: 20/07/2023</p>
+                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B] inline-block">Ver PDF</a>
+            </div>
+
+            <!-- Certificado 3 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold text-[#134B42] mb-2">Desarrollo Web con Flask</h3>
+                <p class="text-[#134B42] mb-4">Fecha de expedición: 10/09/2023</p>
+                <a href="#" class="bg-[#EEA83B] text-[#134B42] px-4 py-2 rounded hover:bg-[#CA763B] inline-block">Ver PDF</a>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
