@@ -3,6 +3,7 @@
   "id": "number",
   "role": "string", // "alumno" o "maestro"
   "nombre": "string",
+  "apellidos" :"string",
   "edad": "number",
   "telefono": "string",
   "email": "string",
