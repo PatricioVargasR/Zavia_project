@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDtoR6h351W-7mkAbKCWG6AqyjJbazzwqw",
-  authDomain: "zavia-5b1a3.firebaseapp.com",
-  projectId: "zavia-5b1a3",
-  storageBucket: "zavia-5b1a3.firebasestorage.app",
-  messagingSenderId: "100544919895",
-  appId: "1:100544919895:web:32757b79b50cccd8cda612"
+  apiKey: "AIzaSyAwTuXNMOqKCQfCZDISN19PydNBqld62yY",
+  authDomain: "zavia-c80ae.firebaseapp.com",
+  projectId: "zavia-c80ae",
+  storageBucket: "zavia-c80ae.firebasestorage.app",
+  messagingSenderId: "386554866274",
+  appId: "1:386554866274:web:79937cc1405a4b5512bf3b"
 };
 
 // Initialize Firebase
