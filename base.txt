@@ -1,0 +1,70 @@
+// Usuarios
+{
+  "id": "number",
+  "role": "string", // "alumno" o "maestro"
+  "nombre": "string",
+  "edad": "number",
+  "telefono": "string",
+  "email": "string",
+  "password": "string",
+  "paquete": {
+    "tipo": "string",
+    "precio": "number",
+    "expiracion": "date"
+  },
+  "pagos": [
+    {
+      "id_pago": "string",
+      "fecha": "date",
+      "monto": "number",
+      "metodo": "string" // Ejemplo: "Tarjeta de crédito" o "Paypal"
+    }
+  ]
+}
+
+// ContenidoMaestros
+{
+  "id": "string",
+  "id_maestro": "number", // Corregido: "numner" a "number"
+  "nombre_maestro": "string",
+  "categoria": "string",
+  "titulo": "string",
+  "descripcion": "string",
+  "archivos_multimedia": [
+    "https://storage.example.com/multimedia1.mp4",
+    "https://storage.example.com/multimedia2.pdf"
+  ],
+  "link": "https://example.com/curso/algebra",
+  "ejercicios": [
+    {
+      "titulo": "string",
+      "descripcion": "string",
+      "link": "https://example.com/ejercicio1"
+    }
+  ],
+  "tiempo_expiracion": "date"
+}
+
+// Paquetes
+{
+  "idPaquete": "string",
+  "precio": "number",
+  "tipo": "string",
+  "duracion": "string"
+}
+
+// Pagos
+{
+  "idPago": "string",
+  "fecha": "date",
+  "monto": "number", // Corregido: "string" a "number"
+  "metodoPago": "string" // Corregido: "metodoPAgo" a "metodoPago"
+}
+
+// ProgresoAlumno
+{
+  "idAlumno": "string",
+  "id_contenido": "string",
+  "estado": "string", // Ejemplo: "Pendiente", "en progreso", "completado"
+  "progreso": "number"
+}
