@@ -15,6 +15,7 @@ class UsuarioSchema(BaseModel):
     apellidos: str
     edad: int
     email: str
+    contraseña: str 
 
     class Config:
         orm_mode = True
