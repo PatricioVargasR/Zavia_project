@@ -710,7 +710,7 @@ def add_recurso(recurso: RecursoSchema):
 
 
 # Endpoint para obtener todos los recursos
-@app.get("/recursos/{id_curso}", response_model=List[RecursoSchema])
+@app.get("/dashboard/contenido{id_curso}", response_model=List[RecursoSchema])
 def get_recursos(id_curso: int):
     conn = get_db_connection()
     cursor = conn.cursor()
