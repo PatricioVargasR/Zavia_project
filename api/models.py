@@ -36,3 +36,14 @@ class Curso(Base):
     fecha_creacion = Column(DateTime, default=datetime.utcnow)
     contenido_explicacion = Column(Text, nullable=False)
     contenido_descripcion = Column(Text, nullable=False)
+
+class Recurso(Base):
+    __tablename__ = "recursos"
+    
+    id_recurso = Column(Integer, primary_key=True, index=True)
+    nombre_recurso = Column(String, nullable=False)
+    link = Column(String, nullable=False)
+    fecha_subida = Column(DateTime, default=datetime.utcnow)
+    id_curso = Column(Integer, ForeignKey("cursos.id_curso"), nullable=False)
+    
+    curso = relationship("Curso", back_populates="recursos")

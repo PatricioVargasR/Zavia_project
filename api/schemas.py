@@ -28,3 +28,11 @@ class CursoSchema(BaseModel):
 
     class Config:
         orm_mode = True
+class RecursoSchema(BaseModel):
+    id_recurso: Optional[int]
+    nombre_recurso: str
+    link: str
+    id_curso: int
+
+    class Config:
+        orm_mode = True
