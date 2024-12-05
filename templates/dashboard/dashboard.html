@@ -5,7 +5,6 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-
         <!-- Main Content -->
         <main class="col-md-9 ms-sm-auto col-lg-22 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -26,15 +25,15 @@
                     <div class="card-body">
                         <h2 class="card-title" style="color: #134B42;">Mis Cursos</h2>
                         <ul>
-                            <li><a href="{{ url_for('curso', curso_id=1) }}" style="color: #CA763B;">Introducción a Flask</a></li>
-                            <li><a href="{{ url_for('curso', curso_id=2) }}" style="color: #CA763B;">Python Avanzado</a></li>
+                            <li><a href="{{ url_for('curso', curso_id=1) }}">Introducción a Flask</a></li>
+                            <li><a href="{{ url_for('curso', curso_id=2) }}">Python Avanzado</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="card mb-4" style="border-color: #AEBA8A;">
                     <div class="card-body">
                         <h2 class="card-title" style="color: #AEBA8A;">Mis Certificados</h2>
-                        <p>Has obtenido 2 certificados. <a href="{{ url_for('certificados') }}" style="color: #CA763B;">Ver todos</a></p>
+                        <p>Has obtenido 2 certificados. <a href="{{ url_for('certificados') }}">Ver todos</a></p>
                     </div>
                 </div>
             {% endif %}

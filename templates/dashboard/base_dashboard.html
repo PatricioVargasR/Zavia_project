@@ -95,6 +95,64 @@
             background-color: #E57373; /* Fondo rojo claro al pasar el mouse */
         }
 
+        /* Estilo para los enlaces en las cards */
+.card a {
+    text-decoration: none; /* Elimina el subrayado */
+    color: #CA763B; /* Color deseado para los enlaces */
+}
+
+.card a:hover {
+    color: #EEA83B; /* Color al pasar el mouse */
+}
+
+.card a:visited {
+    color: #CA763B; /* Color cuando el enlace ha sido visitado */
+}
+
+.card a:focus {
+    outline: none; /* Elimina el borde al hacer clic */
+}
+
+/* Estilo para las cards */
+.card {
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin-bottom: 20px; /* Espacio entre las cards */
+}
+
+/* Estilo para el título de las cards */
+.card-title {
+    font-size: 1.5rem; /* Tamaño más grande para los títulos */
+    font-weight: bold;
+    margin-bottom: 15px; /* Espacio debajo del título */
+}
+
+/* Estilo para el texto dentro de las cards */
+.card-text {
+    font-size: 1rem; /* Tamaño de texto estándar */
+    margin-bottom: 10px; /* Espacio entre párrafos */
+}
+
+/* Estilo para los elementos de lista dentro de las cards */
+.card ul {
+    padding-left: 20px; /* Indentación de la lista */
+}
+
+.card li {
+    margin-bottom: 8px; /* Espacio entre los items de la lista */
+}
+
+/* Estilo para los enlaces dentro de la lista */
+.card li a {
+    font-weight: normal;
+    transition: color 0.3s ease-in-out;
+}
+
+.card li a:hover {
+    color: #EEA83B; /* Color al pasar el mouse */
+}
+
+
     </style>
 </head>
 <body>
