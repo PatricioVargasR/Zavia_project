@@ -19,37 +19,18 @@
 
             <div class="row mt-4">
                 <!-- Certificado 1 -->
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card border-success">
-                        <div class="card-body">
-                            <h5 class="card-title text-success">Introducción a Flask</h5>
-                            <p class="card-text text-muted">Fecha de expedición: 15/05/2023</p>
-                            <a href="#" class="btn btn-warning text-white">Ver PDF</a>
-                        </div>
-                    </div>
-                </div>
+                {% for certificado in certificados %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card border-success">
+                            <div class="card-body">
+                                <h5 class="card-title text-success">{{ certificado['contenido_explicacion'] }}</h5>
+                                <p class="card-text text-muted">Fecha de expedición: {{ certificado['fecha_creacion'] }}</p>
+                                <a href="{{ url_for('generar_certificado', certificado_id=certificado['id_curso']) }}" class="btn btn-warning text-white">Ver PDF</a>
 
-                <!-- Certificado 2 -->
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card border-success">
-                        <div class="card-body">
-                            <h5 class="card-title text-success">Python Avanzado</h5>
-                            <p class="card-text text-muted">Fecha de expedición: 20/07/2023</p>
-                            <a href="#" class="btn btn-warning text-white">Ver PDF</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Certificado 3 -->
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card border-success">
-                        <div class="card-body">
-                            <h5 class="card-title text-success">Desarrollo Web con Flask</h5>
-                            <p class="card-text text-muted">Fecha de expedición: 10/09/2023</p>
-                            <a href="#" class="btn btn-warning text-white">Ver PDF</a>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </main>
     </div>
