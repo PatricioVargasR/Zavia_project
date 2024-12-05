@@ -7,7 +7,6 @@ from typing import Dict, List, Optional
 # Crear la conexión a la base de datos SQLite
 DATABASE_URL = "sqlite:///./zabia.db"
 
-
 # Crear la aplicación FastAPI
 app = FastAPI()
 
@@ -53,6 +52,13 @@ class RecursoSchema(BaseModel):
     nombre_recurso: str
     link: str
     id_curso: int
+
+class Alumno(BaseModel):
+    id_alumno: int
+    nombre: str
+    apellidos: str
+    email: str
+    edad: Optional[int]
 
 
 # Función para obtener la conexión de la base de datos
@@ -712,3 +718,17 @@ def get_recursos(id_curso: int):
         }
         for recurso in recursos
     ]
+
+@app.get("/alumnos", response_model=List)
+def get_alumnos():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Ejectuar la consulta
+    cursor.execute("SELECT * FROM Usuarios WHERE id_role == 0")
+
+    # Recuperar todos los resultados
+    alumnos = cursor.fetchall()
+
+    # Cerrar la conexión
+    return alumnos
