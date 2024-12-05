@@ -1,5 +1,7 @@
+from datetime import datetime
 import random
 import string
+from turtle import color
 from flask import Flask, abort, flash, render_template, request, redirect, url_for
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask import send_file
@@ -251,50 +253,70 @@ def certificados():
 @login_required
 def generar_certificado(certificado_id):
 
-    # Obtener el role del id acutal
+    # Obtener el rol del usuario actual
     response = requests.get(f"{URL_API}/role_usuario/{current_user.id}")
-
-    # Verificar respuesta
     if response.status_code != 200:
         abort(500)
 
     usuario = response.json()
+    nombre_completo = f"{usuario[3]} {usuario[4]}"
 
-    print(usuario)
-
-    # Realizar la petición
+    # Obtener los detalles del curso
     response = requests.get(f"{URL_API}/curso/{certificado_id}")
-
-    # Verificar la respuesta
     if response.status_code != 200:
         abort(500)
 
-    # Parsear el resultado
     curso = response.json()
+    curso_titulo = curso['contenido_explicacion']
+    fecha_solo = curso['fecha_creacion'].split(" ")[0]  # Obtiene solo la parte de la fecha
+    fecha_expedicion = datetime.strptime(fecha_solo, "%Y-%m-%d").strftime("%d de %B de %Y")
 
 
     # Crear un buffer para el PDF
     buffer = io.BytesIO()
-
-    # Crear el PDF usando ReportLab
     c = canvas.Canvas(buffer, pagesize=letter)
 
     # Personalizar el certificado
-    c.setFont("Helvetica", 12)
-    c.drawString(100, 750, f"Certificado Expedido a: {usuario[3]} {usuario[4]}")
-    c.drawString(100, 730, f"Curso: {curso['contenido_explicacion']}")
-    c.drawString(100, 710, f"Fecha de Expedición: {curso['fecha_creacion']}")
-    c.drawString(100, 690, f"Expedido por: Zavia")
+    ancho, alto = letter
 
-    # Agregar un campo de validación (puedes agregar un código de validación único)
+    # Títulos principales
+    c.setFont("Helvetica-Bold", 24)
+    c.drawCentredString(ancho / 2, alto - 100, "Certificado de Finalización")
+
+    # Nombre del receptor
+    c.setFont("Times-Bold", 18)
+    c.drawCentredString(ancho / 2, alto - 160, f"Otorgado a: {nombre_completo}")
+
+    # Detalles del curso
+    c.setFont("Times-Roman", 14)
+    c.drawCentredString(ancho / 2, alto - 200, f"Por completar satisfactoriamente el curso:")
+    c.setFont("Times-BoldItalic", 16)
+    c.drawCentredString(ancho / 2, alto - 230, curso_titulo)
+
+    # Fecha de expedición
+    c.setFont("Times-Roman", 12)
+    c.drawCentredString(ancho / 2, alto - 280, f"Fecha de expedición: {fecha_expedicion}")
+
+    # Organizador
+    c.setFont("Times-Roman", 12)
+    c.drawCentredString(ancho / 2, alto - 300, "Expedido por: Zavia")
+
+    # Validación
+    c.setFont("Times-Roman", 12)
     codigo_validacion = generar_codigo_validacion()
-    c.drawString(100, 670, f"Validación: {codigo_validacion}")
+    c.drawCentredString(ancho / 2, alto - 350, f"Código de validación: {codigo_validacion}")
+    c.drawCentredString(ancho / 2, alto - 370, f"Verifique en: https://zavia.com/validar/{codigo_validacion}")
 
-    # Finalizar y guardar el PDF
+    # Agregar borde decorativo
+    # c.setStrokeColor(colors.grey)
+    c.setLineWidth(2)
+    c.rect(50, 50, ancho - 100, alto - 100)
+
+    # Finalizar el PDF
     c.showPage()
     c.save()
 
-    # Regresar el PDF como respuesta
+    # Enviar el PDF como respuesta
     buffer.seek(0)
     return send_file(buffer, as_attachment=True, download_name="certificado.pdf", mimetype='application/pdf')
 
