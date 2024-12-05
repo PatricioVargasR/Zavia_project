@@ -1,6 +1,5 @@
 {% extends "/dashboard/base_dashboard.html" %}
 
-
 {% block title %}Video Chat - EduConnect{% endblock %}
 
 {% block content %}
@@ -15,35 +14,234 @@
                 <div class="col-lg-8">
                     <div class="card mb-4 border-success">
                         <div class="card-header text-white bg-success">Tu Video</div>
-                        <div class="card-body" style="height: 300px; background-color: #134B42;"></div>
+                        <div class="card-body" style="height: 100%; background-color: #134B42;">
+                            <div id="local" class="participant" style="position: relative; z-index: 10; height: 100%;">
+                                <!-- Video local se adjuntará aquí -->
+                            </div>
+                        </div>
                     </div>
                     <div class="card mb-4 border-warning">
                         <div class="card-header text-white bg-warning">
-                            Video del {% if current_user.role == 'profesor' %}Alumno{% else %}Profesor{% endif %}
+                            Video del {% if usuario[1] == 1 %}Alumno{% else %}Profesor{% endif %}
                         </div>
-                        <div class="card-body" style="height: 300px; background-color: #134B42;"></div>
+                        <div class="card-body" style="height: 100%; background-color: #134B42;">
+                            <div id="remote" class="participant" style="height: 100%;">
+                                <!-- Los videos de los participantes remotos aparecerán aquí -->
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Chat Section -->
-                <div class="col-lg-4">
-                    <div class="card shadow">
-                        <div class="card-header text-white bg-success">Chat</div>
-                        <div class="card-body overflow-auto" style="height: 600px;">
-                            <!-- Example messages -->
-                            <div class="alert alert-success text-end" role="alert">Hola, ¿cómo estás?</div>
-                            <div class="alert alert-warning" role="alert">Bien, gracias. ¿Empezamos la clase?</div>
-                        </div>
-                        <div class="card-footer">
-                            <form class="d-flex">
-                                <input type="text" class="form-control me-2" placeholder="Escribe un mensaje...">
-                                <button type="submit" class="btn btn-warning text-white">Enviar</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                <!-- Name Section -->
+                <form>
+                    <label for="username">Nombre: </label>
+                    <input type="text" name="username" id="username">
+                    <button id="join_leave">Unirse a la video llamada</button>
+                    <button id="share_screen" disabled>Compartir pantalla</button>
+                </form>
+                <p id="count">Desconectado.</p>
+
             </div>
         </main>
     </div>
 </div>
+
+<script src="//media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
+<script>
+    const usernameInput = document.getElementById('username');
+    const button = document.getElementById('join_leave');
+    const shareScreen = document.getElementById('share_screen');
+    const container = document.getElementById('remote');
+    const count = document.getElementById('count');
+    let connected = false;
+    let room;
+    let screenTrack;
+
+    // Añadir el video local
+    function addLocalVideo() {
+        Twilio.Video.createLocalVideoTrack().then(track => {
+            let video = document.getElementById('local');
+            let trackElement = track.attach();
+            trackElement.addEventListener('click', () => { zoomTrack(trackElement); });
+            video.appendChild(trackElement);
+        });
+    };
+
+    // Función para manejar el botón de unirse/dejar la videollamada
+    function connectButtonHandler(event) {
+        event.preventDefault();
+        if (!connected) {
+            let username = usernameInput.value;
+            if (!username) {
+                alert('Ingrese su nombre antes de conectarse');
+                return;
+            }
+            button.disabled = true;
+            button.innerHTML = 'Conectándose...';
+            connect(username).then(() => {
+                button.innerHTML = 'Dejar la videollamada';
+                button.disabled = false;
+                shareScreen.disabled = false;
+            }).catch(() => {
+                alert('La conexión falló. ¿Se está ejecutando el backend?');
+                button.innerHTML = 'Unirse a la videollamada';
+                button.disabled = false;
+            });
+        } else {
+            disconnect();
+            button.innerHTML = 'Unirse a la videollamada';
+            connected = false;
+            shareScreen.innerHTML = 'Compartir pantalla';
+            shareScreen.disabled = true;
+        }
+    };
+
+    // Conectar a la sala de video usando el token de la API
+    function connect(username) {
+        let promise = new Promise((resolve, reject) => {
+            fetch('/llamada', {
+                method: 'POST',
+                body: JSON.stringify({ 'username': username })
+            }).then(res => res.json()).then(data => {
+                return Twilio.Video.connect(data.token);
+            }).then(_room => {
+                room = _room;
+                room.participants.forEach(participantConnected);
+                room.on('participantConnected', participantConnected);
+                room.on('participantDisconnected', participantDisconnected);
+                connected = true;
+                updateParticipantCount();
+                resolve();
+            }).catch(() => {
+                reject();
+            });
+        });
+        return promise;
+    };
+
+    // Actualizar el contador de participantes
+    function updateParticipantCount() {
+        if (!connected)
+            count.innerHTML = 'Desconectado';
+        else
+            count.innerHTML = (room.participants.size + 1) + ' participantes online.';
+    };
+
+    // Manejo cuando un participante se conecta
+    function participantConnected(participant) {
+        let participantDiv = document.createElement('div');
+        participantDiv.setAttribute('id', participant.sid);
+        participantDiv.setAttribute('class', 'participant');
+
+        let tracksDiv = document.createElement('div');
+        participantDiv.appendChild(tracksDiv);
+
+        let labelDiv = document.createElement('div');
+        labelDiv.setAttribute('class', 'label');
+        labelDiv.innerHTML = participant.identity;
+        participantDiv.appendChild(labelDiv);
+
+        container.appendChild(participantDiv);
+
+        participant.tracks.forEach(publication => {
+            if (publication.isSubscribed)
+                trackSubscribed(tracksDiv, publication.track);
+        });
+        participant.on('trackSubscribed', track => trackSubscribed(tracksDiv, track));
+        participant.on('trackUnsubscribed', trackUnsubscribed);
+
+        updateParticipantCount();
+    };
+
+    // Manejo cuando un participante se desconecta
+    function participantDisconnected(participant) {
+        document.getElementById(participant.sid).remove();
+        updateParticipantCount();
+    };
+
+    // Añadir el track de video a la vista
+    function trackSubscribed(div, track) {
+        let trackElement = track.attach();
+        trackElement.addEventListener('click', () => { zoomTrack(trackElement); });
+        div.appendChild(trackElement);
+    };
+
+    // Eliminar el track de video de la vista
+    function trackUnsubscribed(track) {
+        track.detach().forEach(element => {
+            if (element.classList.contains('participantZoomed')) {
+                zoomTrack(element);
+            }
+            element.remove()
+        });
+    };
+
+    // Función para desconectar
+    function disconnect() {
+        room.disconnect();
+        while (container.lastChild.id != 'local')
+            container.removeChild(container.lastChild);
+        button.innerHTML = 'Unirse a la videollamada';
+        connected = false;
+        updateParticipantCount();
+    };
+
+    // Función para compartir pantalla
+    function shareScreenHandler() {
+        event.preventDefault();
+        if (!screenTrack) {
+            navigator.mediaDevices.getDisplayMedia().then(stream => {
+                screenTrack = new Twilio.Video.LocalVideoTrack(stream.getTracks()[0]);
+                room.localParticipant.publishTrack(screenTrack);
+                screenTrack.mediaStreamTrack.onended = () => { shareScreenHandler() };
+                console.log(screenTrack);
+                shareScreen.innerHTML = 'Dejar de compartir';
+            }).catch(() => {
+                alert('No se pudo compartir la pantalla.')
+            });
+        } else {
+            room.localParticipant.unpublishTrack(screenTrack);
+            screenTrack.stop();
+            screenTrack = null;
+            shareScreen.innerHTML = 'Compartir pantalla';
+        }
+    };
+
+    // Función para hacer zoom en un video
+    function zoomTrack(trackElement) {
+        if (!trackElement.classList.contains('participantZoomed')) {
+            container.childNodes.forEach(participant => {
+                if (participant.className == 'participant') {
+                    participant.childNodes[0].childNodes.forEach(track => {
+                        if (track === trackElement) {
+                            track.classList.add('participantZoomed')
+                        } else {
+                            track.classList.add('participantHidden')
+                        }
+                    });
+                    participant.childNodes[1].classList.add('participantHidden');
+                }
+            });
+        } else {
+            container.childNodes.forEach(participant => {
+                if (participant.className == 'participant') {
+                    participant.childNodes[0].childNodes.forEach(track => {
+                        if (track === trackElement) {
+                            track.classList.remove('participantZoomed');
+                        } else {
+                            track.classList.remove('participantHidden');
+                        }
+                    });
+                    participant.childNodes[1].classList.remove('participantHidden');
+                }
+            });
+        }
+    };
+
+    // Inicializar video local
+    addLocalVideo();
+    button.addEventListener('click', connectButtonHandler);
+    shareScreen.addEventListener('click', shareScreenHandler);
+</script>
+
 {% endblock %}

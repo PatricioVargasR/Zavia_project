@@ -9,6 +9,14 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import io
 import requests
+from flask import Flask, jsonify
+from twilio.jwt.access_token import AccessToken
+from twilio.jwt.access_token.grants import VideoGrant
+
+
+twilio_account_sid = "AC0708cb98e98007d8e7a5497adda3f030"
+twilio_api_key_sid = "SKc29763a7f209d0eb6e3d9502aba649a5"
+twilio_api_key_secret = "jwiwkiSfGrZOD1WeEDiJBec5mF6is05G"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'tu_clave_secreta'
@@ -113,9 +121,18 @@ def dashboard():
 @app.route('/video_chat')
 @login_required
 def video_chat():
-    return render_template('dashboard/video_chat.html')
+    # Obtener el role del id acutal
+    response = requests.get(f"{URL_API}/role_usuario/{current_user.id}")
 
-# TODO: TERMINAR
+    # Verificar respuesta
+    if response.status_code != 200:
+        abort(500)
+
+    usuario = response.json()
+
+    return render_template('dashboard/video_chat.html', usuario = usuario)
+
+
 @app.route("/ejercicio/<int:id_ejercicio>", methods=["GET", "POST"])
 @login_required
 def ejercicio(id_ejercicio):
@@ -269,7 +286,6 @@ def certificados():
 
     return render_template('dashboard/certificados.html', usuario = usuario, certificados = valores)
 
-# TODO: MODIFICAR EL PDF
 @app.route('/generar_certificado/<int:certificado_id>')
 @login_required
 def generar_certificado(certificado_id):
@@ -372,6 +388,24 @@ def alumnos():
     # Pasar los datos a la plantilla
     return render_template('dashboard/alumnos.html', alumnos=alumnos)
 
+
+@app.route('/llamada', methods=['POST'])
+def llamada():
+ username = request.get_json(force=True).get('username')
+
+ # Check if username is missing and return an error
+ if not username:
+    return jsonify({'error': 'Username is required'}), 400
+
+ # Create the access token with the provided username
+ token = AccessToken(twilio_account_sid, twilio_api_key_sid,
+ twilio_api_key_secret, identity=username)
+
+ # Add Video grant to the token
+ token.add_grant(VideoGrant(room='My Room'))
+
+ # Return the token and identity
+ return jsonify({'token': token.to_jwt(), 'identity': username})
 
 if __name__ == '__main__':
     app.run(debug=True)
