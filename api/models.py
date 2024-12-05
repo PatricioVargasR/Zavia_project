@@ -35,3 +35,4 @@ class Curso(Base):
     id_profesor = Column(Integer, ForeignKey("profesores.id_profesor"), nullable=False)
     fecha_creacion = Column(DateTime, default=datetime.utcnow)
     contenido_explicacion = Column(Text, nullable=False)
+    contenido_descripcion = Column(Text, nullable=False)

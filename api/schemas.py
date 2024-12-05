@@ -24,6 +24,7 @@ class CursoSchema(BaseModel):
     id_curso: Optional[int]
     id_profesor: int
     contenido_explicacion: str
+    contenido_descripcion: str
 
     class Config:
         orm_mode = True
