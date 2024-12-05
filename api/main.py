@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import sqlite3
 from hashlib import sha256
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 # Crear la conexión a la base de datos SQLite
 DATABASE_URL = "sqlite:///./zabia.db"
@@ -48,9 +48,10 @@ class Test(BaseModel):
 class Ejercicio(BaseModel):
     id_curso: int
 
-class Recurso(BaseModel):
-    id_contenido: int
-    tipo_contenido: str  # 'curso', 'test', 'ejercicio'
+class RecursoSchema(BaseModel):
+    id_recurso: Optional[int]
+    nombre_recurso: str
+    link: str
     id_curso: int
 
 
@@ -63,27 +64,27 @@ def get_db_connection():
 def login(login_data: Login):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     # Buscar el usuario por email
     cursor.execute("SELECT * FROM Usuarios WHERE email = ?", (login_data.email,))
     usuario = cursor.fetchone()
-    
+
     conn.close()
-    
+
     # Verificar si el usuario existe
     if usuario is None:
         raise HTTPException(status_code=401, detail="Usuario no encontrado")
-    
+
     # Comparar la contraseña encriptada
     stored_password = usuario[2]  # La contraseña en la base de datos (encriptada)
     hashed_password = sha256(login_data.contraseña.encode('utf-8')).hexdigest()
 
     if stored_password != hashed_password:
         raise HTTPException(status_code=401, detail="Contraseña incorrecta")
-    
-    return {"message": "Login exitoso"}
 
-@app.post("/signup/")
+    return usuario
+
+@app.post("/signup")
 def signup(user_data: Signup):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -126,19 +127,44 @@ def signup(user_data: Signup):
     return {"message": "Usuario registrado exitosamente"}
 
 
-
 # Endpoint para obtener todos los cursos
 @app.get("/cursos", response_model=List[dict])
 def get_cursos():
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     cursor.execute("SELECT * FROM Cursos")
     cursos = cursor.fetchall()
-    
+
     conn.close()
-    
+
     return [{"id_curso": curso[0], "id_profesor": curso[1], "fecha_creacion": curso[2], "contenido_explicacion": curso[3]} for curso in cursos]
+
+@app.get("/role_usuario/{id_usuario}")
+def get_role_usuario(id_usuario: int):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('''
+    SELECT
+        *
+    FROM
+        Usuarios
+    WHERE
+        id_usuario = ?;
+    ''', (id_usuario,))
+
+    # Obtener los resultados
+    usuario = cursor.fetchone()
+
+    conn.close()
+
+    # Si no se encuentra un usuario, devolver un mensaje adecuado
+    if usuario is None:
+        return {"error": "Usuario no encontrado"}
+
+    return usuario
+
 
 # Endpoint para obtener un curso específico por ID
 @app.get("/curso/{curso_id}", response_model=dict)
@@ -154,7 +180,7 @@ def get_curso(curso_id: int):
     if curso is None:
         raise HTTPException(status_code=404, detail="Curso no encontrado")
     
-    return {"id_curso": curso[0], "id_profesor": curso[1], "fecha_creacion": curso[2], "contenido_explicacion": curso[3]}
+    return {"id_curso": curso[0], "id_profesor": curso[1], "fecha_creacion": curso[2], "contenido_explicacion": curso[3], "contenido_descripcion": curso[4] }
 
 # Endpoint para crear un nuevo curso
 @app.post("/cursos", response_model=dict)
@@ -285,34 +311,63 @@ def eliminar_alumno(curso_id: int, alumno_id: int):
     return {"message": f"Alumno {alumno_id} eliminado del curso {curso_id}"}
 
 
-
-
-@app.get("/preguntas", response_model=List[dict])
-def get_preguntas():
+@app.get("/preguntas/{id_curso}", response_model=List[dict])
+def get_preguntas(id_curso: int):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
-    cursor.execute("SELECT * FROM Preguntas")
+
+    cursor.execute('''
+    SELECT
+        e.id_ejercicio,
+        p.texto_pregunta
+    FROM
+        Preguntas p
+    JOIN
+        Ejercicios_Preguntas ep ON p.id_pregunta = ep.id_pregunta
+    JOIN
+        Ejercicios e ON ep.id_ejercicio = e.id_ejercicio
+    JOIN
+        Cursos c ON e.id_curso = c.id_curso
+    WHERE
+        c.id_curso = ?;
+
+        ''', (id_curso,))
     preguntas = cursor.fetchall()
-    
-    conn.close()
-    
-    return [{"id_pregunta": pregunta[0], "texto_pregunta": pregunta[1], "tipo_contenido": pregunta[2]} for pregunta in preguntas]
 
-@app.get("/pregunta/{pregunta_id}", response_model=dict)
-def get_pregunta(pregunta_id: int):
+    print(preguntas)
+
+    conn.close()
+
+    return [{"id_ejercicio": pregunta[0], "texto_pregunta": pregunta[1] } for pregunta in preguntas]
+
+@app.get("/pregunta/{id_pregunta}", response_model=List)
+def get_question_with_answers(id_pregunta: int):
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    cursor.execute("SELECT * FROM Preguntas WHERE id_pregunta = ?", (pregunta_id,))
-    pregunta = cursor.fetchone()
-    
+    cursor.execute("""
+        SELECT 
+            p.id_pregunta, 
+            p.texto_pregunta,
+            r.id_respuesta,
+            r.texto_respuesta,
+            r.es_correcta
+        FROM 
+            Preguntas p
+        JOIN 
+            Respuestas r ON p.id_pregunta = r.id_pregunta
+        WHERE 
+            p.id_pregunta = ?
+    """, (id_pregunta,))
+
+    question_data = cursor.fetchall()
     conn.close()
-    
-    if pregunta is None:
-        raise HTTPException(status_code=404, detail="Pregunta no encontrada")
-    
-    return {"id_pregunta": pregunta[0], "texto_pregunta": pregunta[1], "tipo_contenido": pregunta[2]}
+
+
+    # Formatear el resultado en un diccionario
+    return question_data
+
+
 
 @app.post("/preguntas", response_model=dict)
 def create_pregunta(pregunta: Pregunta):
@@ -411,18 +466,37 @@ def eliminar_pregunta_de_test(test_id: int, pregunta_id: int):
     
     return {"message": "Relación eliminada correctamente entre test y pregunta"}
 
-# Obtener todas las preguntas asociadas a un test
-@app.get("/test/{test_id}/preguntas", response_model=List[dict])
-def obtener_preguntas_de_test(test_id: int):
+@app.get("/test/{id_test}", response_model=List)
+def get_test_with_questions_and_answers(id_test: int):
     conn = get_db_connection()
     cursor = conn.cursor()
-
-    cursor.execute("SELECT Preguntas.* FROM Preguntas INNER JOIN Tests_Preguntas ON Preguntas.id_pregunta = Tests_Preguntas.id_pregunta WHERE Tests_Preguntas.id_test = ?", (test_id,))
-    preguntas = cursor.fetchall()
     
+    cursor.execute("""
+        SELECT 
+            t.id_test,
+            t.id_curso,
+            p.id_pregunta,
+            p.texto_pregunta,
+            r.id_respuesta,
+            r.texto_respuesta,
+            r.es_correcta
+        FROM 
+            Tests t
+        JOIN 
+            Tests_Preguntas tp ON t.id_test = tp.id_test
+        JOIN 
+            Preguntas p ON tp.id_pregunta = p.id_pregunta
+        JOIN 
+            Respuestas r ON p.id_pregunta = r.id_pregunta
+        WHERE 
+            t.id_test = ?
+    """, (id_test,))
+    
+    test_data = cursor.fetchall()
     conn.close()
     
-    return [{"id_pregunta": pregunta[0], "texto_pregunta": pregunta[1], "tipo_contenido": pregunta[2]} for pregunta in preguntas]
+    return test_data
+
 
 
 # Asignar una pregunta a un ejercicio
@@ -565,21 +639,35 @@ def delete_respuesta(respuesta_id: int):
 
 # --- ENDPOINTS: TESTS Y EJERCICIOS ---
 
-@app.post("/tests", response_model=dict)
-def create_test(test: Test):
+@app.get("/tests/{id_curso}", response_model=List[Dict[str, str]])
+def get_tests_by_course(id_curso: int):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
-    cursor.execute(
-        "INSERT INTO Tests (id_curso) VALUES (?)",
-        (test.id_curso,)
-    )
-    
-    test_id = cursor.lastrowid
-    conn.commit()
+
+    # Consulta SQL para obtener los tests y las preguntas asociadas
+    cursor.execute("""
+        SELECT
+            t.id_test,
+            p.texto_pregunta
+        FROM
+            Tests t
+        JOIN
+            Tests_Preguntas tp ON t.id_test = tp.id_test
+        JOIN
+            Preguntas p ON tp.id_pregunta = p.id_pregunta
+        JOIN
+            Cursos c ON t.id_curso = c.id_curso
+        WHERE
+            c.id_curso = ?
+    """, (id_curso,))
+
+    tests_preguntas = cursor.fetchall()
     conn.close()
-    
-    return {"id_test": test_id, "id_curso": test.id_curso}
+
+    # Preparar la respuesta en formato de lista de diccionarios
+    result = [{"id_test": str(row[0]), "texto_pregunta": row[1]} for row in tests_preguntas]
+
+    return result
 
 @app.post("/ejercicios", response_model=dict)
 def create_ejercicio(ejercicio: Ejercicio):
@@ -599,18 +687,28 @@ def create_ejercicio(ejercicio: Ejercicio):
 
 # --- ENDPOINTS: RECURSOS ---
 
-@app.post("/recursos", response_model=dict)
-def create_recurso(recurso: Recurso):
+# Endpoint para obtener todos los recursos
+@app.get("/recursos/{id_curso}", response_model=List[RecursoSchema])
+def get_recursos(id_curso: int):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
-    cursor.execute(
-        "INSERT INTO Recursos (id_contenido, tipo_contenido, id_curso) VALUES (?, ?, ?)",
-        (recurso.id_contenido, recurso.tipo_contenido, recurso.id_curso)
-    )
-    
-    recurso_id = cursor.lastrowid
-    conn.commit()
+
+    # Ejecutar la consulta para obtener todos los recursos
+    cursor.execute("SELECT id_recurso, nombre_recurso, link, id_curso FROM recursos WHERE id_curso = ?", (id_curso, ))
+
+    # Recuperar todos los resultados
+    recursos = cursor.fetchall()
+
+    # Cerrar la conexión
     conn.close()
-    
-    return {"id_recurso": recurso_id, "id_contenido": recurso.id_contenido, "tipo_contenido": recurso.tipo_contenido, "id_curso": recurso.id_curso}
+
+    # Devolver los resultados como una lista de diccionarios
+    return [
+        {
+            "id_recurso": recurso[0],
+            "nombre_recurso": recurso[1],
+            "link": recurso[2],
+            "id_curso": recurso[3]
+        }
+        for recurso in recursos
+    ]
