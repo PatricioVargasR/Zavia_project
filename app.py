@@ -14,9 +14,9 @@ from twilio.jwt.access_token import AccessToken
 from twilio.jwt.access_token.grants import VideoGrant
 
 
-twilio_account_sid = "AC0708cb98e98007d8e7a5497adda3f030"
-twilio_api_key_sid = "SKc29763a7f209d0eb6e3d9502aba649a5"
-twilio_api_key_secret = "jwiwkiSfGrZOD1WeEDiJBec5mF6is05G"
+twilio_account_sid = ""
+twilio_api_key_sid = ""
+twilio_api_key_secret = ""
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'tu_clave_secreta'
