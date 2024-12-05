@@ -63,9 +63,11 @@ INSERT INTO Ejercicios_Preguntas (id_ejercicio, id_pregunta) VALUES
 (1, 3), 
 (2, 5);
 
-INSERT INTO Recursos (id_contenido, tipo_contenido, id_curso) VALUES
-(1, 'curso', 1),
-(2, 'test', 1),
-(3, 'ejercicio', 2),
-(4, 'curso', 3),
-(5, 'test', 4);
+-- Insertar recursos relacionados con los cursos
+INSERT INTO Recursos (nombre_recurso, link, id_curso) VALUES
+('Curso de introducción a Python', 'https://link-a-curso-python.com', 1),
+('Test de fundamentos en Python', 'https://link-a-test-python.com', 1),
+('Ejercicios de matemáticas discretas', 'https://link-a-ejercicios-matematicas.com', 1),
+('Curso de bases de datos', 'https://link-a-curso-bases-de-datos.com', 1),
+('Test de redes de computadoras', 'https://link-a-test-redes.com', 4),
+('Ejercicios de desarrollo web con HTML y CSS', 'https://link-a-ejercicios-html-css.com', 5);

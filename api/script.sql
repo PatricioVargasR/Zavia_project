@@ -100,8 +100,8 @@ CREATE TABLE Ejercicios (
 -- Tabla de recursos
 CREATE TABLE Recursos (
     id_recurso INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_contenido INTEGER NOT NULL,
-    tipo_contenido TEXT NOT NULL CHECK (tipo_contenido IN ('curso', 'test', 'ejercicio')),
+    nombre_recurso TEXT NOT NULL,
+    link TEXT NOT NULL,
     fecha_subida TEXT NOT NULL DEFAULT (datetime('now')),
     id_curso INTEGER NOT NULL,
     FOREIGN KEY (id_curso) REFERENCES Cursos(id_curso)
