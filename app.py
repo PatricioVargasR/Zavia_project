@@ -46,7 +46,7 @@ def login():
         status_code = response.status_code
 
         if status_code == 404:
-            return 'Invalid credentials'
+            abort(500)
 
         user = response.json()
 
@@ -72,10 +72,8 @@ def signup():
             response = requests.post(f"{URL_API}/signup", json=datos)
 
             if response.status_code != 200:
+                abort(500)
 
-                return 'Invalid credentials'
-
-        # Aquí iría la lógica para crear un nuevo usuario
         return redirect(url_for('login'))
     return render_template('signup.html')
 
@@ -164,7 +162,32 @@ def test(id_test):
     # Parsear la respuesta
     test = response.json()
 
-    print(test)
+    # Diccionario para almacenar preguntas y respuestas
+    preguntas_respuestas = {}
+
+    # Procesar cada entrada
+    for item in test:
+        id_pregunta = item[2]  # ID único de la pregunta
+        pregunta = item[3]     # Texto de la pregunta
+        id_respuesta = item[4] # ID de la respuesta
+        respuesta = item[5]    # Texto de la respuesta
+        es_correcta = bool(item[6])  # Si es correcta o no (convertido a booleano)
+        
+        # Si la pregunta aún no está registrada, inicializarla
+        if id_pregunta not in preguntas_respuestas:
+            preguntas_respuestas[id_pregunta] = {
+                "pregunta": pregunta,
+                "respuestas": []
+            }
+        
+        # Añadir la respuesta a la lista de respuestas de esta pregunta
+        preguntas_respuestas[id_pregunta]["respuestas"].append({
+            "id_respuesta": id_respuesta,
+            "texto_respuesta": respuesta,
+            "es_correcta": es_correcta
+        })
+
+    print(preguntas_respuestas)
 
     return render_template('dashboard/test.html')
 
@@ -318,7 +341,7 @@ def generar_certificado(certificado_id):
 
     # Enviar el PDF como respuesta
     buffer.seek(0)
-    return send_file(buffer, as_attachment=True, download_name="certificado.pdf", mimetype='application/pdf')
+    return send_file(buffer, as_attachment=True, download_name=f"certificado - {curso_titulo}.pdf", mimetype='application/pdf')
 
 def generar_codigo_validacion():
     """Genera una cadena aleatoria de caracteres como código de validación (simula una firma)."""

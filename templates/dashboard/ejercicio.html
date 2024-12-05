@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio - Plataforma Educativa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="../../static/favicon.ico" type="image/x-icon">
+
+
+    <style>
+        /* Configuración global para diseño de página */
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #F4F4F9;
+        }
+
+        /* Estilo de la barra lateral */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: #134B42;
+            color: white;
+            padding-top: 60px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar h5 {
+            margin: 0;
+            text-align: center;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #EEA83B;
+        }
+
+        /* Contenido principal ajustado para la barra lateral */
+        main {
+            margin-left: 250px; /* Ajuste al tamaño de la barra lateral */
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        /* Estilo de las tarjetas de contenido */
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #134B42;
+            margin-bottom: 20px;
+        }
+
+        .card-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Estilo para los botones de respuesta */
+        .btn-answer {
+            background-color: #EEA83B;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-answer:hover {
+            background-color: #CA763B;
+        }
+
+        .btn-answer:focus {
+            outline: none;
+            box-shadow: 0 0 5px 2px rgba(255, 165, 0, 0.5);
+        }
+
+        .btn-answer.selected {
+            background-color: #EE4B2B;
+        }
+
+        /* Estilo para el pie de página */
+        footer {
+            background-color: #134B42;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        /* Estilo del encabezado */
+        header {
+            background-color: #134B42;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 0;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        header .navbar-brand {
+            font-size: 1.5rem;
+            color: #EEA83B;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado -->
+    <header>
+        <a class="navbar-brand" href="/">Zavia</a>
+    </header>
+
+    <!-- Barra lateral -->
+    <div class="sidebar">
+        <h5 style="color: #EEA83B;">Menú</h5>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('video_chat') }}">Video/Chat</a>
+        <a href="{{ url_for('certificados') }}">Certificado</a>
+        <a href="{{ url_for('alumnos') }}">Alumnos</a>
+        <a href="{{ url_for('logout') }}" style="color: #EE4B2B;">Cerrar sesión</a>
+    </div>
+
+    <!-- Contenido principal -->
+    <main>
+        <div class="content">
+            <div class="card">
+                <div class="card-title">Pregunta del ejercicio</div>
+                <div class="card-text">
+                    {{ pregunta }}
+                </div>
+                <!-- Botones de respuesta -->
+                <form method="POST">
+                    {% for key, value in respuestas.items() %}
+                        <button class="btn-answer" name="respuesta" value="{{ key }}" onclick="selectAnswer(this)">{{ value }}</button>
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Zavia. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+function selectAnswer(button) {
+    // Desmarcar todos los botones
+    const buttons = document.querySelectorAll('.btn-answer');
+    buttons.forEach(btn => btn.classList.remove('selected'));
+
+    // Marcar el botón seleccionado
+    button.classList.add('selected');
+}
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

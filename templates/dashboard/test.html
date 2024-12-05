@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Plataforma Educativa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="../../static/favicon.ico" type="image/x-icon">
+
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #F4F4F9;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: #134B42;
+            color: white;
+            padding-top: 60px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .sidebar h5 {
+            margin: 0;
+            text-align: center;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #EEA83B;
+        }
+
+     /* Contenido principal ajustado para la barra lateral */
+     main {
+            margin-left: 250px;
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        /* Estilo de las tarjetas de contenido */
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #134B42;
+            margin-bottom: 20px;
+        }
+
+        .card-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Estilo para los botones de respuesta */
+        .btn-answer {
+            background-color: #EEA83B;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-answer:hover {
+            background-color: #CA763B;
+        }
+
+        .btn-answer:focus {
+            outline: none;
+            box-shadow: 0 0 5px 2px rgba(255, 165, 0, 0.5);
+        }
+
+        .btn-answer.selected {
+            background-color: #EE4B2B;
+        }
+
+        /* Estilo para el pie de página */
+        footer {
+            background-color: #134B42;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        /* Estilo del encabezado */
+        header {
+            background-color: #134B42;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 0;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        header .navbar-brand {
+            font-size: 1.5rem;
+            color: #EEA83B;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <a class="navbar-brand" href="/">Zavia</a>
+    </header>
+
+    <div class="sidebar">
+        <h5 style="color: #EEA83B;">Menú</h5>
+        <a href="#">Dashboard</a>
+        <a href="#">Video/Chat</a>
+        <a href="#">Certificado</a>
+        <a href="#">Alumnos</a>
+        <a href="#" style="color: #EE4B2B;">Cerrar sesión</a>
+    </div>
+
+    <main>
+        <div class="content">
+            <!-- Contenedor dinámico de preguntas -->
+            <div id="questions-container"></div>
+
+            <!-- Botones de navegación -->
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-secondary" id="previous" disabled onclick="navigateQuestion('previous')">Anterior</button>
+                <button class="btn btn-primary" id="next" onclick="navigateQuestion('next')">Siguiente</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Zavia. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        const data = [
+            [1, 1, 1, '¿Qué es una variable en Python?', 1, 'Un contenedor para almacenar datos', 1],
+            [1, 1, 1, '¿Qué es una variable en Python?', 2, 'Una función matemática', 0],
+            [1, 1, 2, '¿Cuál es la sintaxis correcta para un bucle for?', 3, 'for i in range(5):', 1],
+            [1, 1, 2, '¿Cuál es la sintaxis correcta para un bucle for?', 4, 'loop while true:', 0]
+        ];
+
+        const questionsContainer = document.getElementById('questions-container');
+        const questions = {};
+
+        // Procesar datos y agrupar preguntas
+        data.forEach(item => {
+            const questionId = item[2];
+            const questionText = item[3];
+            const answerId = item[4];
+            const answerText = item[5];
+            const isCorrect = item[6] === 1;
+
+            if (!questions[questionId]) {
+                questions[questionId] = { text: questionText, answers: [] };
+            }
+
+            questions[questionId].answers.push({
+                id: answerId,
+                text: answerText,
+                isCorrect
+            });
+        });
+
+        // Crear preguntas dinámicamente
+        Object.keys(questions).forEach((id, index) => {
+            const question = questions[id];
+            const questionCard = document.createElement('div');
+            questionCard.classList.add('card');
+            questionCard.style.display = index === 0 ? 'block' : 'none';
+
+            const title = document.createElement('div');
+            title.classList.add('card-title');
+            title.textContent = `Pregunta ${id}: ${question.text}`;
+            questionCard.appendChild(title);
+
+            const answersContainer = document.createElement('div');
+            answersContainer.classList.add('card-text');
+
+            question.answers.forEach(answer => {
+                const button = document.createElement('button');
+                button.classList.add('btn-answer');
+                button.textContent = answer.text;
+                button.onclick = () => selectAnswer(button, answer.isCorrect);
+                answersContainer.appendChild(button);
+            });
+
+            questionCard.appendChild(answersContainer);
+
+            // Si es la última pregunta, añade el botón de enviar
+            if (index === Object.keys(questions).length - 1) {
+                const form = document.createElement('form');
+                form.onsubmit = evaluateAnswer;
+                form.id = "answer-form";
+
+                const submitButton = document.createElement('button');
+                submitButton.type = 'submit';
+                submitButton.classList.add('btn', 'btn-success');
+                submitButton.textContent = 'Enviar respuesta';
+                form.appendChild(submitButton);
+
+                questionCard.appendChild(form);
+            }
+
+            questionsContainer.appendChild(questionCard);
+        });
+
+        let currentQuestionIndex = 0;
+        let selectedAnswer = null;
+
+        function selectAnswer(button, isCorrect) {
+            const buttons = button.parentElement.querySelectorAll('.btn-answer');
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            selectedAnswer = isCorrect;
+        }
+
+        function evaluateAnswer(event) {
+            event.preventDefault();
+            const result = selectedAnswer ? "¡Correcto!" : "Incorrecto. Intenta de nuevo.";
+            alert(result);
+        }
+
+        function navigateQuestion(direction) {
+            const questionCards = questionsContainer.querySelectorAll('.card');
+            questionCards[currentQuestionIndex].style.display = 'none';
+
+            if (direction === 'next' && currentQuestionIndex < questionCards.length - 1) {
+                currentQuestionIndex++;
+            } else if (direction === 'previous' && currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+            }
+
+            questionCards[currentQuestionIndex].style.display = 'block';
+            document.getElementById('previous').disabled = currentQuestionIndex === 0;
+            document.getElementById('next').disabled = currentQuestionIndex === questionCards.length - 1;
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
