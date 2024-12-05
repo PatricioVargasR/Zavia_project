@@ -6,148 +6,37 @@
     <title>Plataforma Educativa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        /* Estilos para la barra lateral */
-        .sidebar {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: #134B42;
-            overflow-x: hidden;
-            transition: 0.3s;
-            padding-top: 60px;
-            z-index: 1001;
-        }
-
-        .sidebar a {
-            padding: 10px 15px;
-            text-decoration: none;
-            font-size: 1.2rem;
-            color: white;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .sidebar a:hover {
-            background-color: #EEA83B;
-        }
-
-        .sidebar .closebtn {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 2rem;
-            cursor: pointer;
-        }
-
-        /* Botón de apertura del menú */
-        .openbtn {
-            font-size: 1rem;
-            cursor: pointer;
-            background-color: #EEA83B;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            position: fixed;
-            left: 20px;
-            top: 15px;
-            z-index: 1000;
-        }
-
-        .openbtn:hover {
-            background-color: #CA763B;
-        }
-
-        /* Encabezado */
-        header {
-            background-color: #134B42;
-            padding: 30px 0;
-            position: relative;
-        }
-
-        .navbar-brand {
-            color: #EEA83B;
-            font-weight: bold;
-            font-size: 1.5rem;
-            text-align: center;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* Ajuste para alinear los enlaces a la derecha */
-        .navbar-nav {
-            position: absolute; /* Posiciona los elementos de la lista de manera absoluta */
-            right: 20px; /* Ajusta el espacio desde el borde derecho */
-            top: 50%; /* Centra verticalmente con respecto al contenedor */
-            transform: translateY(-50%); /* Ajusta la posición vertical */
-        }
-
-        .navbar-nav .nav-link {
-            color: #AEBA8A;
-            font-size: 1rem;
-            padding: 0 10px; /* Espacio entre enlaces */
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #CA763B;
-        }
-    </style>
 </head>
 <body>
-    <!-- Botón para abrir la barra lateral -->
-    <button class="openbtn" onclick="openSidebar()">☰ Menu</button>
-    
-    <!-- Barra lateral -->
-    <div id="sidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeSidebar()">×</a>
-        <a href="#">Alumnos</a>
-        <a href="#">Materias</a>
-    </div>
-
-    <header>
+    <header style="background-color: #134B42;">
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
-                <!-- Título centrado -->
-                <a class="navbar-brand" href="/">Savia</a>
+                <a class="navbar-brand" href="/" style="color: #EEA83B; font-weight: bold;">Savia</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#about">¿Quiénes somos?</a>
+                            <a class="nav-link" href="#about" style="color: #AEBA8A;">¿Quiénes somos?</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#plans">Planes</a>
+                            <a class="nav-link" href="#plans" style="color: #CA763B;">Planes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#contact">Contacto</a>
+                            <a class="nav-link" href="#contact" style="color: #EEA83B;">Contacto</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-
     <main>
         {% block content %}{% endblock %}
     </main>
-    <footer class="text-center py-3 mt-4" style="background-color: #134B42; color: white;">
+    <footer class="text-center py-3 mt-0" style="background-color: #134B42; color: white;">
         <p>&copy; 2024 Savia. Todos los derechos reservados.</p>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function openSidebar() {
-            document.getElementById("sidebar").style.width = "250px";
-        }
-
-        function closeSidebar() {
-            document.getElementById("sidebar").style.width = "0";
-        }
-    </script>
 </body>
 </html>

@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Educativa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Configuración global para diseño de página */
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Estilo de la barra lateral */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px; /* Ancho fijo */
+            background-color: #134B42;
+            color: white;
+            padding-top: 60px;
+            overflow-y: auto;
+            z-index: 1000; /* Asegura que esté sobre el contenido */
+        }
+
+        .sidebar h5 {
+            margin: 0;
+            text-align: center;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #EEA83B;
+        }
+
+        /* Contenido principal ajustado para la barra lateral */
+        main {
+            margin-left: 50px; /* Espacio ocupado por la barra lateral */
+            padding: 20px;
+            flex-grow: 1; /* Ocupa el espacio restante */
+            overflow-y: auto;
+        }
+
+        /* Footer fijo al final */
+        footer {
+            background-color: #134B42;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+
+        /* Estilo del encabezado */
+        header {
+            background-color: #134B42;
+            color: white;
+            display: flex;
+            justify-content: center; /* Centra horizontalmente el contenido */
+            align-items: center; /* Centra verticalmente */
+            padding: 15px 0;
+            top: 0;
+            width: 100%;
+            z-index: 1000; /* Asegura que el header esté encima del contenido */
+        }
+
+        header .navbar-brand {
+            font-size: 1.5rem;
+            color: #EEA83B;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .sidebar a:last-child {
+    color: #EE4B2B; /* Rojo llamativo */
+    font-weight: bold;
+}
+.sidebar a:last-child:hover {
+    background-color: #E57373; /* Fondo rojo claro al pasar el mouse */
+}
+
+    </style>
+</head>
+<body>
+    <!-- Encabezado -->
+    <header>
+        <a class="navbar-brand" href="/">Savia</a>
+    </header>
+
+    <!-- Barra lateral siempre visible -->
+    <div class="sidebar">
+        <h5 style="color: #EEA83B;">Menú</h5>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('video_chat') }}">Video/Chat</a>
+        <a href="{{ url_for('certificados') }}">Certificado</a>
+        <a href="{{ url_for('alumnos') }}">Alumnos</a>
+        <a href="{{ url_for('logout') }}" style="color: #EE4B2B;">Cerrar sesión</a> <!-- Nuevo enlace -->
+    </div>
+    
+
+    <!-- Contenido principal -->
+    <main>
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Savia. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
