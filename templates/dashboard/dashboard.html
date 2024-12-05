@@ -25,15 +25,16 @@
                     <div class="card-body">
                         <h2 class="card-title" style="color: #134B42;">Mis Cursos</h2>
                         <ul>
-                            <li><a href="{{ url_for('curso', curso_id=1) }}">Introducción a Flask</a></li>
-                            <li><a href="{{ url_for('curso', curso_id=2) }}">Python Avanzado</a></li>
+                            {% for curso in cursos %}
+                                <li><a href="{{ url_for('curso', curso_id=curso['id_curso'] ) }}">{{ curso['contenido_explicacion'] }}</a></li>
+                            {% endfor  %}
                         </ul>
                     </div>
                 </div>
                 <div class="card mb-4" style="border-color: #AEBA8A;">
                     <div class="card-body">
                         <h2 class="card-title" style="color: #AEBA8A;">Mis Certificados</h2>
-                        <p>Has obtenido 2 certificados. <a href="{{ url_for('certificados') }}">Ver todos</a></p>
+                        <p>Has obtenido {{ cursos | length }} certificados. <a href="{{ url_for('certificados') }}">Ver todos</a></p>
                     </div>
                 </div>
             {% endif %}
