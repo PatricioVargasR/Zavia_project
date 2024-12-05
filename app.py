@@ -172,22 +172,20 @@ def test(id_test):
         id_respuesta = item[4] # ID de la respuesta
         respuesta = item[5]    # Texto de la respuesta
         es_correcta = bool(item[6])  # Si es correcta o no (convertido a booleano)
-        
+
         # Si la pregunta aún no está registrada, inicializarla
         if id_pregunta not in preguntas_respuestas:
             preguntas_respuestas[id_pregunta] = {
                 "pregunta": pregunta,
                 "respuestas": []
             }
-        
+
         # Añadir la respuesta a la lista de respuestas de esta pregunta
         preguntas_respuestas[id_pregunta]["respuestas"].append({
             "id_respuesta": id_respuesta,
             "texto_respuesta": respuesta,
             "es_correcta": es_correcta
         })
-
-    print(preguntas_respuestas)
 
     return render_template('dashboard/test.html')
 
@@ -348,10 +346,10 @@ def generar_codigo_validacion():
     caracteres = string.ascii_uppercase + string.digits
     return ''.join(random.choice(caracteres) for _ in range(16))  # Cadena de 16 caracteres
 
-@app.route('/alumnos')
+@app.route('/alumnos', methods=['GET'])
 @login_required
 def alumnos():
-    # Obtener el role del id acutal
+    # Obtener el role del id actual
     response = requests.get(f"{URL_API}/role_usuario/{current_user.id}")
 
     # Verificar respuesta
@@ -362,22 +360,18 @@ def alumnos():
 
     if usuario[1] != 1:
         return redirect(url_for('dashboard'))
-    return render_template('dashboard/alumnos.html')
 
-# Manejar errors 404
-@app.errorhandler(404)
-def error_404(error):
-    return render_template('error_404.html'), 404
+    response = requests.get(f"{URL_API}/alumnos")
 
-# Manejar errores 500
-@app.errorhandler(500)
-def error_500(error):
-    return render_template('error_500.html', error=None), 500
+    if response.status_code != 200:
+        abort(500)
 
-# Manejar errores generales
-@app.errorhandler(Exception)
-def handle_exception(error):
-    return render_template('error_500.html', error=str(error)), 500
+    alumnos = response.json()
+
+
+    # Pasar los datos a la plantilla
+    return render_template('dashboard/alumnos.html', alumnos=alumnos)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
