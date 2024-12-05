@@ -644,7 +644,6 @@ def delete_respuesta(respuesta_id: int):
     return {"message": "Respuesta eliminada con éxito"}
 
 # --- ENDPOINTS: TESTS Y EJERCICIOS ---
-
 @app.get("/tests/{id_curso}", response_model=List[Dict[str, str]])
 def get_tests_by_course(id_curso: int):
     conn = get_db_connection()
@@ -693,14 +692,35 @@ def create_ejercicio(ejercicio: Ejercicio):
 
 # --- ENDPOINTS: RECURSOS ---
 
+
+@app.post("/recursos")
+def add_recurso(recurso: RecursoSchema):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Insertar el nuevo recurso en la base de datos
+    cursor.execute(
+        "INSERT INTO recursos (nombre_recurso, link, id_curso, fecha_subida) VALUES (?, ?, ?, ?)",
+        (recurso.nombre_recurso, recurso.link, recurso.id_curso, datetime.utcnow())
+    )
+    conn.commit()
+    conn.close()
+
+    return {"message": "Recurso añadido correctamente"}
+
+
 # Endpoint para obtener todos los recursos
 @app.get("/recursos/{id_curso}", response_model=List[RecursoSchema])
 def get_recursos(id_curso: int):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Ejecutar la consulta para obtener todos los recursos
-    cursor.execute("SELECT id_recurso, nombre_recurso, link, id_curso FROM recursos WHERE id_curso = ?", (id_curso, ))
+    # Ejecutar la consulta para obtener todos los recursos, incluyendo portada, archivo y fecha de subida
+    cursor.execute("""
+        SELECT id_recurso, nombre_recurso, link, id_curso, portada, archivo, fecha_subida 
+        FROM recursos 
+        WHERE id_curso = ?
+    """, (id_curso, ))
 
     # Recuperar todos los resultados
     recursos = cursor.fetchall()
@@ -714,7 +734,10 @@ def get_recursos(id_curso: int):
             "id_recurso": recurso[0],
             "nombre_recurso": recurso[1],
             "link": recurso[2],
-            "id_curso": recurso[3]
+            "id_curso": recurso[3],
+            "portada": recurso[4],      # Ruta de la imagen de portada
+            "archivo": recurso[5],      # Ruta del archivo adicional
+            "fecha_subida": recurso[6]  # Fecha de subida del recurso
         }
         for recurso in recursos
     ]
